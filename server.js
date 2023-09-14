@@ -1,13 +1,45 @@
-const express = require("express");
-const http = require("http");
-const WebSocket = require("ws");
+import serveStatic from "serve-static-bun";
 
-const app = express();
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const APP_PORT = Bun.env.PORT || 3000;
 
-const APP_PORT = process.env.PORT || 3000;
-const APP_URL = process.env.URL || `http://localhost:${APP_PORT}`;
+const server = Bun.serve({
+  port: APP_PORT,
+  fetch(req, server) {
+    const success = server.upgrade(req);
+    if (success) {
+      // Bun automatically returns a 101 Switching Protocols
+      // if the upgrade succeeds
+      return undefined;
+    }
+
+    // handle HTTP request normally
+    const url = new URL(req.url);
+
+    if (url.pathname.startsWith("/public")) {
+      return serveStatic("public", { stripFromPathname: "/public" })(req);
+    }
+    if (url.pathname === "/") {
+      return new Response(Bun.file(`public/index.html`));
+    }
+    if (url.pathname === "/admin") {
+      return new Response(Bun.file(`public/admin.html`));
+    }
+  },
+  websocket: {
+    open(ws) {
+      ws.data = ws.data || {};
+      clients.push(ws);
+      updateAdminClientCount();
+    },
+    close(ws) {
+      clients = clients.filter((c) => c !== ws);
+      updateAdminClientCount();
+    },
+    async message(ws, message) {
+      handleIncomingMessage(ws, message);
+    },
+  },
+});
 
 const ACTIONS = {
   ADMIN: "admin",
@@ -15,27 +47,7 @@ const ACTIONS = {
   CLIENT_COUNT_UPDATE: "clientCountUpdate",
 };
 
-app.use("/public", express.static("public"));
-app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html"));
-app.get("/admin", (req, res) => res.sendFile(__dirname + "/public/admin.html"));
-
-server.listen(APP_PORT, () =>
-  console.log(`Servidor ouvindo a porta ${APP_PORT}!`)
-);
-
 let clients = [];
-
-wss.on("connection", (ws) => {
-  clients.push(ws);
-  updateAdminClientCount();
-
-  ws.on("close", () => {
-    clients = clients.filter((client) => client !== ws);
-    updateAdminClientCount();
-  });
-
-  ws.on("message", handleIncomingMessage.bind(null, ws));
-});
 
 function handleIncomingMessage(ws, msg) {
   const data = JSON.parse(msg);
@@ -43,7 +55,7 @@ function handleIncomingMessage(ws, msg) {
 
   switch (action) {
     case ACTIONS.ADMIN:
-      ws.isAdmin = true;
+      ws.data.isAdmin = true;
       break;
     case ACTIONS.DRAW:
       handleDraw(data.code);
@@ -54,9 +66,7 @@ function handleIncomingMessage(ws, msg) {
 }
 
 function handleDraw(confirmationCode) {
-  let participants = Array.from(wss.clients).filter(
-    (client) => !client.isAdmin
-  );
+  let participants = clients.filter((client) => !client.data.isAdmin);
   const winner = participants[Math.floor(Math.random() * participants.length)];
 
   participants.forEach((client) => {
@@ -69,12 +79,10 @@ function handleDraw(confirmationCode) {
 }
 
 function updateAdminClientCount() {
-  const clientCount = Array.from(wss.clients).filter(
-    (client) => !client.isAdmin
-  ).length;
+  const clientCount = clients.filter((client) => !client.data.isAdmin).length;
 
-  Array.from(wss.clients).forEach((client) => {
-    if (client.isAdmin && client.readyState === WebSocket.OPEN) {
+  clients.forEach((client) => {
+    if (client.data.isAdmin && client.readyState === WebSocket.OPEN) {
       client.send(
         JSON.stringify({
           action: ACTIONS.CLIENT_COUNT_UPDATE,
@@ -84,3 +92,5 @@ function updateAdminClientCount() {
     }
   });
 }
+
+console.log(`Servidor ouvindo a porta ${APP_PORT}!`);

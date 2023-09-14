@@ -1,5 +1,7 @@
 # Sorteio Websocket - Código Fonte TV
 
+Fork do [projeto desenvolvido pelo Código Fonte TV](https://github.com/gabrielfroes/sorteio-websocket), porém utilizando o [Bun](https://bun.sh/) ao invés do Node.js
+
 Uma aplicação simples de sorteio em tempo real utilizando WebSockets, desenvolvida para a o canal Código Fonte TV no YouTube.
 
 ## Descrição
@@ -11,35 +13,34 @@ Esta aplicação consiste em duas partes principais:
 
 ## Tecnologias Utilizadas
 
-- **Node.js** para o backend.
-- **Express** para servir a aplicação web.
+- **Bun** para o backend.
 - **WebSocket** para comunicação em tempo real entre o servidor e os clientes.
 
 ## Configuração e Instalação
 
 ### Pré-requisitos
 
-- Node.js e yarn instalados. [Veja como instalar aqui](https://classic.yarnpkg.com/en/docs/install/).
+- Bun instalado. [Veja como instalar aqui](https://bun.sh/).
 
 ### Passos para configuração
 
 1.**Clonar o Repositório**
 
 ```bash
-git clone https://github.com/gabrielfroes/sorteio-websocket
+git clone https://github.com/fxcrespo/sorteio-websocket-bun
 cd sorteio-websocket
 ```
 
 2.**Instalar dependências**
 
 ```bash
-yarn install
+bun install
 ```
 
 3.**Iniciar o Servidor**
 
 ```bash
-yarn start
+bun start
 ```
 
 4.**Configuração do WebSocket**

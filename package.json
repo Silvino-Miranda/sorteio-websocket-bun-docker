@@ -1,11 +1,21 @@
 {
-  "name": "sorteio-websocket",
+  "name": "sorteio-websocket-bun",
   "version": "1.0.0",
-  "main": "index.js",
-  "author": "Gabriel Froes",
+  "type": "module",
+  "module": "server.js",
+  "author": "Fernando Crespo",
   "license": "MIT",
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "start": "bun run server.js",
+    "dev": "bun run --hot server.js"
+  },
   "dependencies": {
-    "express": "^4.18.2",
-    "ws": "^8.14.0"
+    "serve-static-bun": "^0.5.3"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
   }
 }
