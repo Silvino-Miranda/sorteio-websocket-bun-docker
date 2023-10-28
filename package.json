@@ -2,20 +2,21 @@
   "name": "sorteio-websocket-bun",
   "version": "1.0.0",
   "type": "module",
-  "module": "server.js",
-  "author": "Fernando Crespo",
+  "main": "server.js",
+  "author": "Silvino Miranda",
   "license": "MIT",
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
   "scripts": {
     "start": "bun run server.js",
-    "dev": "bun run --hot server.js"
+    "dev": "bun run --hot src/server.ts",
+    "build": "bun build src/server.ts --out-dir dist"
   },
   "dependencies": {
     "serve-static-bun": "^0.5.3"
   },
   "devDependencies": {
     "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   }
 }
