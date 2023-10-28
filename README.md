@@ -64,3 +64,48 @@ Se o dispositivo suportar, ele vibrará após o resultado do sorteio ser anuncia
 - Verifique quantos clientes estão conectados através do contador de participantes.
 - Clique no botão "Realizar Sorteio" para iniciar o sorteio. Um código de confirmação será gerado.
 - Todos os clientes receberão o resultado em tempo real. O vencedor verá o código de confirmação em sua tela.
+
+
+## Docker e Docker Compose
+
+Para facilitar a configuração e execução do projeto, utilizamos o Docker e o Docker Compose. Abaixo estão os passos para configurar e executar o projeto usando essas tecnologias.
+
+### Pré-requisitos
+
+- Docker e Docker Compose instalados em sua máquina.
+
+### Passos para configuração com Docker
+
+1. **Construir a imagem Docker**:
+
+   No diretório raiz do projeto, execute o seguinte comando para construir a imagem Docker:
+
+   ```bash
+   docker-compose build
+   ```
+
+2. **Executar a aplicação**:
+
+   Ainda no diretório raiz do projeto, execute o seguinte comando para iniciar a aplicação:
+
+   ```bash
+   docker-compose up
+   ```
+
+   Agora, a aplicação estará rodando no `http://localhost:3000`. Você pode acessar a interface do admin em `http://localhost:3000/admin` e a interface do cliente em `http://localhost:3000`.
+
+3. **Parar a aplicação**:
+
+   Para parar a aplicação e remover os contêineres criados, execute o seguinte comando no diretório raiz do projeto:
+
+   ```bash
+   docker-compose down
+   ```
+
+### Notas Adicionais
+
+- O arquivo `docker-compose.yml` contém a configuração do Docker Compose para este projeto. Ele define como a imagem Docker deve ser construída e como a aplicação deve ser executada.
+- O arquivo `Dockerfile` contém as instruções para construir a imagem Docker. Este arquivo está configurado para copiar os arquivos do projeto para um contêiner Docker, instalar as dependências e iniciar o servidor Bun.
+- Os comandos do Docker Compose devem ser executados no mesmo diretório que contém os arquivos `docker-compose.yml` e `Dockerfile`.
+
+Esses passos permitem que você configure, execute e interaja com a aplicação em um ambiente Dockerizado, garantindo que a configuração do ambiente seja consistente, independentemente de onde a aplicação está sendo executada.
